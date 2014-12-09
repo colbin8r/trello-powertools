@@ -85,6 +85,7 @@ module.exports = function (grunt) {
       test: {
         options: {
           open: false,
+          port: 3000,
           base: [
             'test',
             '<%= config.app %>'
@@ -125,7 +126,7 @@ module.exports = function (grunt) {
       all: {
         options: {
           run: true,
-          urls: ['http://localhost:<%= connect.options.port %>/index.html']
+          urls: ['http://localhost:<%= connect.test.options.port %>/index.html']
         }
       }
     },
