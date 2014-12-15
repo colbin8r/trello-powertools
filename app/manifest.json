@@ -40,7 +40,7 @@
             "js": [
                 "scripts/cajon.js",
                 // // "bower_components/jquery/dist/jquery.js",
-                "scripts/require-config.js",
+                "scripts/config/require-config.js",
                 "scripts/contentscript.js"
             ],
             "run_at": "document_end",
