@@ -210,10 +210,12 @@ module.exports = function (grunt) {
     },
 
     bower: {
-      rjsConfig: '<%= config.app %>/scripts/require-config.js',
-      options: {
-        baseUrl: '/scripts/'
-      }
+      target: {
+        rjsConfig: '<%= config.app %>/scripts/require-config.js',
+        options: {
+          transitive: true
+        },
+      },
     },
 
     // Reads HTML for usemin blocks to enable smart builds that automatically
@@ -415,7 +417,5 @@ module.exports = function (grunt) {
     'build'
   ]);
 
-  grunt.loadNpmTasks('grunt-contrib-compass');
-
-  grunt.loadNpmTasks('grunt-bower-requirejs');
+  // grunt.loadNpmTasks('grunt-bower-requirejs');
 };

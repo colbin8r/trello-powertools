@@ -38,7 +38,7 @@
                 "styles/main.css"
             ],
             "js": [
-                "scripts/require.js",
+                "scripts/cajon.js",
                 // // "bower_components/jquery/dist/jquery.js",
                 "scripts/require-config.js",
                 "scripts/contentscript.js"
