@@ -16,6 +16,7 @@
     },
     "permissions": [
       "activeTab",
+      "storage",
       "http://trello.com/",
       "https://trello.com/",
       "http://*.trello.com/",
@@ -33,6 +34,12 @@
             "matches": [
                 "http://trello.com/*",
                 "https://trello.com/*"
+            ],
+            "exclude_matches": [
+                // "*://*/*/authorize*"
+            ],
+            "exclude_globs": [
+                "*authorize*"
             ],
             "css": [
                 "styles/main.css"
