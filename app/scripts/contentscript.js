@@ -1,5 +1,9 @@
 (function() {
   'use strict';
-  console.log('\'Allo \'Allo! Content script');
+  requirejs(['jquery'], function($) {
+    console.log('\'Allo \'Allo! Content script!');
+    console.log($);
+    return console.log(window);
+  });
 
 }).call(this);

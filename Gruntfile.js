@@ -18,7 +18,8 @@ module.exports = function (grunt) {
   // Configurable paths
   var config = {
     app: 'app',
-    dist: 'dist'
+    dist: 'dist',
+    test: 'test'
   };
 
   grunt.initConfig({
@@ -33,7 +34,10 @@ module.exports = function (grunt) {
         tasks: ['bowerInstall']
       },
       coffee: {
-        files: ['<%= config.app %>/scripts/{,*/}*.{coffee,litcoffee,coffee.md}'],
+        files: [
+          '<%= config.app %>/scripts/{,*/}*.{coffee,litcoffee,coffee.md}',
+          // '<%= config.test %>/spec/{,*/}*.{coffee,litcoffee,coffee.md}'
+        ],
         tasks: ['coffee:chrome'],
         options: {
           livereload: true
@@ -119,6 +123,7 @@ module.exports = function (grunt) {
         'Gruntfile.js',
         '<%= config.app %>/scripts/{,*/}*.js',
         '!<%= config.app %>/scripts/vendor/*',
+        '!<%= config.app %>/scripts/require.js',
         'test/spec/{,*/}*.js'
       ]
     },
@@ -139,7 +144,7 @@ module.exports = function (grunt) {
           cwd: '<%= config.app %>/scripts',
           src: '{,*/}*.{coffee,litcoffee,coffee.md}',
           dest: '<%= config.app %>/scripts',
-          ext: '.js'
+          ext: '.js',
         }]
       },
       dist: {
@@ -148,7 +153,7 @@ module.exports = function (grunt) {
           cwd: '<%= config.app %>/scripts',
           src: '{,*/}*.{coffee,litcoffee,coffee.md}',
           dest: '<%= config.app %>/scripts',
-          ext: '.js'
+          ext: '.js',
         }]
       },
       test: {
@@ -157,7 +162,7 @@ module.exports = function (grunt) {
           cwd: 'test/spec',
           src: '{,*/}*.coffee',
           dest: './spec',
-          ext: '.js'
+          ext: '.js',
         }]
       }
     },
@@ -201,6 +206,13 @@ module.exports = function (grunt) {
       sass: {
         src: ['<%= config.app %>/styles/{,*/}*.{scss,sass}'],
         ignorePath: '<%= config.app %>/bower_components/'
+      }
+    },
+
+    bower: {
+      rjsConfig: '<%= config.app %>/scripts/require-config.js',
+      options: {
+        baseUrl: '/scripts/'
       }
     },
 
@@ -404,4 +416,6 @@ module.exports = function (grunt) {
   ]);
 
   grunt.loadNpmTasks('grunt-contrib-compass');
+
+  grunt.loadNpmTasks('grunt-bower-requirejs');
 };

@@ -19,7 +19,7 @@ To load the extension into Chrome for development and testing:
 1. Visit chrome://extensions
 2. Enable Developer Mode via the checkbox in the top-right
 3. Drag and drop the "app" directory into Chrome; alternatively, use "Load unpacked extension..." to load the "app" directory
-4. `grunt debug`
+4. `grunt watch`
 5. Chrome updates magically as you edit =)
 
 Run the test suite with `grunt test`.
