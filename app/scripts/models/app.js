@@ -116,6 +116,13 @@
         });
       };
 
+      App.prototype.selectCurrentBoard = function() {
+        this.board = this.user.get('boards').findWhere({
+          url: document.location.href
+        });
+        return this.board;
+      };
+
       return App;
 
     })();
