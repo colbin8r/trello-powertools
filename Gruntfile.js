@@ -211,7 +211,7 @@ module.exports = function (grunt) {
 
     bower: {
       target: {
-        rjsConfig: '<%= config.app %>/scripts/require-config.js',
+        rjsConfig: '<%= config.app %>/scripts/config/require-config.js',
         options: {
           transitive: true
         },

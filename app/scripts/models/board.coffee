@@ -1,7 +1,8 @@
 'use strict';
 
-define ['backbone'], (Backbone) ->
-  class Board extends Backbone.Model
+define ['config/app', 'backbone', 'backbone-relational'], (config, Backbone) ->
+  class Board extends Backbone.RelationalModel
+    urlRoot: config.api.baseUrl + 'boards/'
     title: ''
     description: ''
     members: ''

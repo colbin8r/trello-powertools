@@ -1,27 +1,42 @@
 'use strict';
 
-define ['jquery', 'config/app', 'config/settings'], ($, config, settings) ->
+define ['jquery', 'config/app', 'config/settings', 'moment', 'models/member'], ($, config, settings, moment, Member) ->
   class App
 
     @authorized: no
 
     bootstrap: ->
       console.info 'bootstrapping...'
-      @authorize()
+      # this sends the API auth token and app key with every request
+      $.ajaxSetup
+        data:
+          key: config.api.key
+          token: @token
+      @user = new Member()
+      @user.set id: 'me'
+      @user.fetch().then => @user.get('boards').fetch().then => @selectCurrentBoard()
 
-    authorize: ->
+    authorize: (successCallback) ->
       console.info 'checking for authorization...'
+      @authDuration = moment.duration hours: 1
+      @authSuccessCallback = successCallback
       @checkToken @validToken
 
     checkToken: (callback) ->
-      chrome.storage.sync.get 'token', callback
+      chrome.storage.sync.get ['token', 'token_expiration'], callback
 
     validToken: (data) =>
       token = data.token
+      expires = moment data.token_expiration
       if token?
-        console.info 'authorization found.'
-        @authorized = yes
-        @token = token
+        if not expires? or not expires.isValid() or expires.isBefore moment()
+          console.warn 'authorization expired'
+          @requestToken()
+        else
+          console.info 'authorization found.'
+          @authorized = yes
+          @token = token
+          @authSuccessCallback() if @authSuccessCallback?
       else
         console.warn 'no authorization found'
         @requestToken()
@@ -61,4 +76,8 @@ define ['jquery', 'config/app', 'config/settings'], ($, config, settings) ->
 
     authorizeWithToken: (token) ->
       console.info 'saving token...'
-      chrome.storage.sync.set 'token': token, -> console.info 'token saved.'
+      chrome.storage.sync.set 'token': token, 'token_expiration': moment().add(@authDuration).format(), -> console.info 'token saved.'
+
+    selectCurrentBoard: ->
+      @board = @user.get('boards').findWhere url: document.location.href
+      @board

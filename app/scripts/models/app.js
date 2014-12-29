@@ -2,7 +2,7 @@
   'use strict';
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['jquery', 'config/app', 'config/settings'], function($, config, settings) {
+  define(['jquery', 'config/app', 'config/settings', 'moment', 'models/member'], function($, config, settings, moment, Member) {
     var App;
     return App = (function() {
       function App() {
@@ -14,25 +14,54 @@
 
       App.prototype.bootstrap = function() {
         console.info('bootstrapping...');
-        return this.authorize();
+        $.ajaxSetup({
+          data: {
+            key: config.api.key,
+            token: this.token
+          }
+        });
+        this.user = new Member();
+        this.user.set({
+          id: 'me'
+        });
+        return this.user.fetch().then((function(_this) {
+          return function() {
+            return _this.user.get('boards').fetch().then(function() {
+              return _this.selectCurrentBoard();
+            });
+          };
+        })(this));
       };
 
-      App.prototype.authorize = function() {
+      App.prototype.authorize = function(successCallback) {
         console.info('checking for authorization...');
+        this.authDuration = moment.duration({
+          hours: 1
+        });
+        this.authSuccessCallback = successCallback;
         return this.checkToken(this.validToken);
       };
 
       App.prototype.checkToken = function(callback) {
-        return chrome.storage.sync.get('token', callback);
+        return chrome.storage.sync.get(['token', 'token_expiration'], callback);
       };
 
       App.prototype.validToken = function(data) {
-        var token;
+        var expires, token;
         token = data.token;
+        expires = moment(data.token_expiration);
         if (token != null) {
-          console.info('authorization found.');
-          this.authorized = true;
-          return this.token = token;
+          if ((expires == null) || !expires.isValid() || expires.isBefore(moment())) {
+            console.warn('authorization expired');
+            return this.requestToken();
+          } else {
+            console.info('authorization found.');
+            this.authorized = true;
+            this.token = token;
+            if (this.authSuccessCallback != null) {
+              return this.authSuccessCallback();
+            }
+          }
         } else {
           console.warn('no authorization found');
           return this.requestToken();
@@ -80,7 +109,8 @@
       App.prototype.authorizeWithToken = function(token) {
         console.info('saving token...');
         return chrome.storage.sync.set({
-          'token': token
+          'token': token,
+          'token_expiration': moment().add(this.authDuration).format()
         }, function() {
           return console.info('token saved.');
         });
