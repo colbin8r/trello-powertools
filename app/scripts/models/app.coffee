@@ -1,7 +1,7 @@
 'use strict';
 
 define ['jquery', 'config/app', 'config/settings', 'moment', 'models/member'], ($, config, settings, moment, Member) ->
-  class App
+  class App extends Backbone.Model
 
     @authorized: no
 
@@ -14,7 +14,9 @@ define ['jquery', 'config/app', 'config/settings', 'moment', 'models/member'], (
           token: @token
       @user = new Member()
       @user.set id: 'me'
-      @user.fetch().then => @user.get('boards').fetch().then => @selectCurrentBoard()
+      @user.fetch().then => @user.get('boards').fetch().then =>
+        @selectCurrentBoard()
+        @trigger 'ready', @
 
     authorize: (successCallback) ->
       console.info 'checking for authorization...'

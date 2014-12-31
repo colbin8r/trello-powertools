@@ -5,5 +5,6 @@ requirejs ['jquery', 'knockback', 'backbone', 'knockout', 'models/app', 'config/
   app = new App()
   # passing the bootstrap as a callback to authorize() allows us to ensure that we always have authentication and can get data
   app.authorize app.bootstrap
-
-  console.log 'here'
+  app.on 'ready', (app) =>
+    console.log 'here'
+    console.log app

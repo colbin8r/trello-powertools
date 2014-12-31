@@ -1,13 +1,18 @@
 (function() {
   'use strict';
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['jquery', 'config/app', 'config/settings', 'moment', 'models/member'], function($, config, settings, moment, Member) {
     var App;
-    return App = (function() {
+    return App = (function(_super) {
+      __extends(App, _super);
+
       function App() {
         this.receiveToken = __bind(this.receiveToken, this);
         this.validToken = __bind(this.validToken, this);
+        return App.__super__.constructor.apply(this, arguments);
       }
 
       App.authorized = false;
@@ -27,7 +32,8 @@
         return this.user.fetch().then((function(_this) {
           return function() {
             return _this.user.get('boards').fetch().then(function() {
-              return _this.selectCurrentBoard();
+              _this.selectCurrentBoard();
+              return _this.trigger('ready', _this);
             });
           };
         })(this));
@@ -125,7 +131,7 @@
 
       return App;
 
-    })();
+    })(Backbone.Model);
   });
 
 }).call(this);

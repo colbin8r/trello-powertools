@@ -4,7 +4,12 @@
     var app;
     app = new App();
     app.authorize(app.bootstrap);
-    return console.log('here');
+    return app.on('ready', (function(_this) {
+      return function(app) {
+        console.log('here');
+        return console.log(app);
+      };
+    })(this));
   });
 
 }).call(this);
