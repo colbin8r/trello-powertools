@@ -21,7 +21,7 @@ define ['jquery', 'config/app', 'config/settings', 'moment', 'models/member'], (
     authorize: (successCallback) ->
       console.info 'checking for authorization...'
       @authDuration = moment.duration hours: 1
-      @authSuccessCallback = successCallback
+      @authSuccessCallback = successCallback if successCallback?
       @checkToken @validToken
 
     checkToken: (callback) ->
@@ -78,7 +78,9 @@ define ['jquery', 'config/app', 'config/settings', 'moment', 'models/member'], (
 
     authorizeWithToken: (token) ->
       console.info 'saving token...'
-      chrome.storage.sync.set 'token': token, 'token_expiration': moment().add(@authDuration).format(), -> console.info 'token saved.'
+      chrome.storage.sync.set 'token': token, 'token_expiration': moment().add(@authDuration).format(), =>
+        console.info 'token saved.'
+        @authorize()
 
     selectCurrentBoard: ->
       @board = @user.get('boards').findWhere url: document.location.href

@@ -44,7 +44,9 @@
         this.authDuration = moment.duration({
           hours: 1
         });
-        this.authSuccessCallback = successCallback;
+        if (successCallback != null) {
+          this.authSuccessCallback = successCallback;
+        }
         return this.checkToken(this.validToken);
       };
 
@@ -117,9 +119,12 @@
         return chrome.storage.sync.set({
           'token': token,
           'token_expiration': moment().add(this.authDuration).format()
-        }, function() {
-          return console.info('token saved.');
-        });
+        }, (function(_this) {
+          return function() {
+            console.info('token saved.');
+            return _this.authorize();
+          };
+        })(this));
       };
 
       App.prototype.selectCurrentBoard = function() {
